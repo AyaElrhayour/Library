@@ -7,7 +7,7 @@ var Book = function (book) {
   this.year = book.year;
 };
 Book.create = function (newB, result) {
-  dbConn.query("INSERT INTO books set ?", newBook, function (err, res) {
+  dbConn.query("INSERT INTO books set ?", newB, function (err, res) {
     if (err) {
       console.log("error: ", err);
       result(err, null);

@@ -2,13 +2,13 @@ const express = require('express')
 const router = express.Router()
 const bookController =   require('../controllers/book.controller');
 
-router.get('/api/books', bookController.findAll);
+router.get('/', bookController.findAll);
 
-router.post('/api/books', bookController.create);
+router.post('/', bookController.create);
 
-router.get('/api/books/:id', bookController.findById);
+router.get('/:id', bookController.findById);
 
-router.put('/api/books/:id', bookController.update);
+router.put('/:id', bookController.update);
 
-router.delete('/api/books/:id', bookController.delete);
+router.delete('/:id', bookController.delete);
 module.exports = router
