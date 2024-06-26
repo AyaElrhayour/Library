@@ -1,8 +1,10 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import bookRoutes from './src/routes/book.routes.js';
+import cors from 'cors';
 
 const app = express();
+app.use(cors());
 const port = process.env.PORT || 3000;
 
 app.use(bodyParser.urlencoded({ extended: true }));
