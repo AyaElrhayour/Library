@@ -1,5 +1,6 @@
-'use strict';
-const { Client } = require('pg');
+import pg from 'pg';
+const { Client } = pg;
+
 const dbConn = new Client({
   host: 'localhost',
   user: 'postgres',
@@ -16,4 +17,4 @@ dbConn.connect(err => {
   }
 });
 
-module.exports = dbConn;
+export default dbConn;

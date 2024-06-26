@@ -1,14 +1,12 @@
-const express = require('express')
-const router = express.Router()
-const bookController =   require('../controllers/book.controller');
+import express from 'express';
+import { findAll, create, findById, update, remove } from '../controllers/book.controller.js';
 
-router.get('/', bookController.findAll);
+const router = express.Router();
 
-router.post('/', bookController.create);
+router.get('/', findAll);
+router.post('/', create);
+router.get('/:id', findById);
+router.put('/:id', update);
+router.delete('/:id', remove);
 
-router.get('/:id', bookController.findById);
-
-router.put('/:id', bookController.update);
-
-router.delete('/:id', bookController.delete);
-module.exports = router
+export default router;

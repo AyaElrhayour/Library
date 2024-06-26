@@ -1,49 +1,72 @@
-'use strict';
-const Book = require('../models/book.model');
-exports.findAll = function (req, res) {
-  Book.findAll(function (err, book) {
-    console.log('controller')
-    if (err)
-      res.send(err);
-    console.log('res', book);
-    res.send(book);
+import Book from '../models/book.model.js';
+
+export const findAll = (req, res) => {
+  Book.findAll((err, books) => {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      res.send(books);
+    }
   });
 };
-exports.create = function (req, res) {
-  const new_book = new Book(req.body);
-  
-  if (req.body.constructor === Object && Object.keys(req.body).length === 0) {
-    res.status(400).send({ error: true, message: 'Please provide all required field' });
+
+export const create = (req, res) => {
+  if (Object.keys(req.body).length === 0) {
+    res.status(400).send({ error: true, message: 'Please provide all required fields' });
   } else {
-    Book.create(new_book, function (err, book) {
-      if (err)
-        res.send(err);
-      res.json({ error: false, message: "Book added successfully!", data: book });
+    const newBook = new Book(req.body);
+    Book.create(newBook, (err, book) => {
+      if (err) {
+        res.status(500).send(err);
+      } else {
+        res.status(201).json({ error: false, message: "Book added successfully!", data: book });
+      }
     });
   }
 };
-exports.findById = function (req, res) {
-  Book.findById(req.params.id, function (err, book) {
-    if (err)
-      res.send(err);
-    res.json(book);
+
+export const findById = (req, res) => {
+  Book.findById(req.params.id, (err, book) => {
+    if (err) {
+      if (err.kind === "not_found") {
+        res.status(404).send({ message: `Book with id ${req.params.id} not found.` });
+      } else {
+        res.status(500).send({ message: "Error retrieving Book with id " + req.params.id });
+      }
+    } else {
+      res.send(book);
+    }
   });
 };
-exports.update = function (req, res) {
-  if (req.body.constructor === Object && Object.keys(req.body).length === 0) {
-    res.status(400).send({ error: true, message: 'Please provide all required field' });
+
+export const update = (req, res) => {
+  if (Object.keys(req.body).length === 0) {
+    res.status(400).send({ error: true, message: 'Please provide all required fields' });
   } else {
-    Book.update(req.params.id, new Book(req.body), function (err, book) {
-      if (err)
-        res.send(err);
-      res.json({ error: false, message: 'Book successfully updated' });
+    Book.update(req.params.id, new Book(req.body), (err, book) => {
+      if (err) {
+        if (err.kind === "not_found") {
+          res.status(404).send({ message: `Book with id ${req.params.id} not found.` });
+        } else {
+          res.status(500).send({ message: "Error updating Book with id " + req.params.id });
+        }
+      } else {
+        res.json({ error: false, message: 'Book successfully updated', data: book });
+      }
     });
   }
 };
-exports.delete = function (req, res) {
-  Book.delete(req.params.id, function (err, book) {
-    if (err)
-      res.send(err);
-    res.json({ error: false, message: 'Book successfully deleted' });
+
+export const remove = (req, res) => {
+  Book.delete(req.params.id, (err, book) => {
+    if (err) {
+      if (err.kind === "not_found") {
+        res.status(404).send({ message: `Book with id ${req.params.id} not found.` });
+      } else {
+        res.status(500).send({ message: "Could not delete Book with id " + req.params.id });
+      }
+    } else {
+      res.json({ error: false, message: 'Book successfully deleted' });
+    }
   });
 };
